@@ -147,16 +147,16 @@ void main() {
 
   test(
       'completeMfaChallenge throws a MfaNotCompletedException if the response does not return 200',
-          () async {
-        var subject = Auth(
-          MockClient((request) async {
-            return http.Response('', 400);
-          }),
-        );
+      () async {
+    var subject = Auth(
+      MockClient((request) async {
+        return http.Response('', 400);
+      }),
+    );
 
-        expect(
-              () async => await subject.completeMfaChallenge('dummyToken'),
-          throwsA(TypeMatcher<MfaNotCompletedException>()),
-        );
-      });
+    expect(
+      () async => await subject.completeMfaChallenge('dummyToken'),
+      throwsA(TypeMatcher<MfaNotCompletedException>()),
+    );
+  });
 }
