@@ -4,8 +4,6 @@ class Token {
   String tokenType;
   DateTime validUntil;
 
-  Token(this.accessToken, this.refreshToken, this.validUntil);
-
   Token.FromJson(dynamic json) {
     accessToken = json['access_token'] as String;
     refreshToken = json['refresh_token'] as String;
