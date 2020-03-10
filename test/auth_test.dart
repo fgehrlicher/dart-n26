@@ -159,4 +159,26 @@ void main() {
       throwsA(TypeMatcher<MfaNotCompletedException>()),
     );
   });
+
+  test('AuthApiException string', () {
+    var dummyStatusCode = 123;
+    expect(AuthApiException(123).toString(),
+        'unkown error. status code: $dummyStatusCode');
+  });
+
+  test('InvalidCredentialsException string', () {
+    expect(InvalidCredentialsException().toString(), 'Invalid credentials');
+  });
+
+  test('NoMfaTokenException string', () {
+    expect(NoMfaTokenException().toString(), 'No mfa token found in response');
+  });
+
+  test('MfaTriggerException string', () {
+    expect(MfaTriggerException().toString(), 'Cant trigger mfa');
+  });
+
+  test('MfaNotCompletedException string', () {
+    expect(MfaNotCompletedException().toString(), 'Mfa not yet completed');
+  });
 }
