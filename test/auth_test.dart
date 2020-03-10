@@ -38,7 +38,9 @@ void main() {
     );
   });
 
-  test('getMFAToken throws an generic exception if the response code is not 400 or 403', () async {
+  test(
+      'getMFAToken throws an generic exception if the response code is not 400 or 403',
+      () async {
     var subject = Auth(
       MockClient((request) async {
         return http.Response('', 234);
@@ -51,7 +53,9 @@ void main() {
     );
   });
 
-  test('getMFAToken throws a invalid credential exception if the response code is not 400', () async {
+  test(
+      'getMFAToken throws a invalid credential exception if the response code is not 400',
+      () async {
     var subject = Auth(
       MockClient((request) async {
         return http.Response('', 400);
@@ -64,7 +68,9 @@ void main() {
     );
   });
 
-  test('getMFAToken throws a invalid credential exception if the response does not contain a mfa token', () async {
+  test(
+      'getMFAToken throws a invalid credential exception if the response does not contain a mfa token',
+      () async {
     var testMfaToken = 'testmfatoken';
     var testUser = 'testusername';
     var testPassword = 'testpassword';
@@ -80,8 +86,33 @@ void main() {
     );
 
     expect(
-          () async => await subject.getMFAToken(testUser, testPassword),
+      () async => await subject.getMFAToken(testUser, testPassword),
       throwsA(TypeMatcher<NoMfaTokenException>()),
+    );
+  });
+
+  test('triggerMFAChallenge returns nothing on success', () async {
+    var subject = Auth(
+      MockClient((request) async {
+        return http.Response('', 201);
+      }),
+    );
+
+    await subject.triggerMFAChallenge('dummyToken');
+  });
+
+  test(
+      'triggerMFAChallenge throws a mfa trigger exception if the response does not return 201',
+      () async {
+    var subject = Auth(
+      MockClient((request) async {
+        return http.Response('', 400);
+      }),
+    );
+
+    expect(
+      () async => await subject.triggerMFAChallenge('dummyToken'),
+      throwsA(TypeMatcher<MfaTriggerException>()),
     );
   });
 }
