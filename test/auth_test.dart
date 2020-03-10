@@ -63,4 +63,25 @@ void main() {
       throwsA(TypeMatcher<InvalidCredentialsException>()),
     );
   });
+
+  test('getMFAToken throws a invalid credential exception if the response does not contain a mfa token', () async {
+    var testMfaToken = 'testmfatoken';
+    var testUser = 'testusername';
+    var testPassword = 'testpassword';
+
+    var subject = Auth(
+      MockClient((request) async {
+        var jsonMap = {'mfaToken2': testMfaToken};
+        return http.Response(
+          json.encode(jsonMap),
+          403,
+        );
+      }),
+    );
+
+    expect(
+          () async => await subject.getMFAToken(testUser, testPassword),
+      throwsA(TypeMatcher<NoMfaTokenException>()),
+    );
+  });
 }
