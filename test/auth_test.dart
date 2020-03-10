@@ -38,7 +38,7 @@ void main() {
     );
   });
 
-  test('getMFAToken throws an exception if the response code is not 403', () async {
+  test('getMFAToken throws an generic exception if the response code is not 400 or 403', () async {
     var subject = Auth(
       MockClient((request) async {
         return http.Response('', 234);
@@ -48,6 +48,19 @@ void main() {
     expect(
       () async => await subject.getMFAToken('', ''),
       throwsA(TypeMatcher<AuthApiException>()),
+    );
+  });
+
+  test('getMFAToken throws a invalid credential exception if the response code is not 400', () async {
+    var subject = Auth(
+      MockClient((request) async {
+        return http.Response('', 400);
+      }),
+    );
+
+    expect(
+      () async => await subject.getMFAToken('', ''),
+      throwsA(TypeMatcher<InvalidCredentialsException>()),
     );
   });
 }
