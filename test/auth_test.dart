@@ -115,4 +115,48 @@ void main() {
       throwsA(TypeMatcher<MfaTriggerException>()),
     );
   });
+
+  test('completeMfaChallenge returns the correct token', () async {
+    var testMfaToken = 'testmfatoken';
+    var testAccessToken = 'testaccesstoken';
+    var testRefreshToken = 'testrefreshtoken';
+    var testTokenType = 'testtokentype';
+    var testExpiresIn = 100;
+
+    var subject = Auth(
+      MockClient((request) async {
+        var jsonMap = {
+          'access_token': testAccessToken,
+          'refresh_token': testRefreshToken,
+          'token_type': testTokenType,
+          'expires_in': testExpiresIn,
+        };
+
+        return http.Response(
+          json.encode(jsonMap),
+          200,
+        );
+      }),
+    );
+
+    var token = await subject.completeMfaChallenge(testMfaToken);
+    expect(token.refreshToken, testRefreshToken);
+    expect(token.accessToken, testAccessToken);
+    expect(token.tokenType, testTokenType);
+  });
+
+  test(
+      'completeMfaChallenge throws a MfaNotCompletedException if the response does not return 200',
+          () async {
+        var subject = Auth(
+          MockClient((request) async {
+            return http.Response('', 400);
+          }),
+        );
+
+        expect(
+              () async => await subject.completeMfaChallenge('dummyToken'),
+          throwsA(TypeMatcher<MfaNotCompletedException>()),
+        );
+      });
 }
