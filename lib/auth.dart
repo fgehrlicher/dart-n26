@@ -15,9 +15,9 @@ class Auth {
   Auth(this._client);
 
   /// Retrieves a mfa token for a given [user] and [password].
-  /// Throws an [InvalidCredentialsException] if the credentials are invalid,
-  /// an [NoMfaTokenException] if the api response does not contain a
-  /// mfa token and a [AuthApiException] for an unknown error.
+  /// Throws [InvalidCredentialsException] if the credentials are invalid,
+  /// [NoMfaTokenException] if the api response does not contain a
+  /// mfa token and [AuthApiException] for an unknown error.
   Future<String> getMFAToken(String user, String password) async {
     var uri = Uri.parse('https://api.tech26.de/oauth2/token');
     var fields = {
@@ -47,7 +47,7 @@ class Auth {
   }
 
   /// Triggers a mfa challenge for a given [mfaToken].
-  /// Throws an [MfaTriggerException] if the api returns an invalid response.
+  /// Throws [MfaTriggerException] if the api returns an invalid response.
   Future<void> triggerMFAChallenge(String mfaToken) async {
     var uri = Uri.parse('https://api.tech26.de/api/mfa/challenge');
     var body = json.encode({'challengeType': 'oob', 'mfaToken': mfaToken});
@@ -61,8 +61,8 @@ class Auth {
     }
   }
 
-  /// Completes a mfa challenge for a given [mfaToken].
-  /// Throws an [MfaNotCompletedException] if the mfa challenge is
+  /// Retrieves a token for a completed mfa challenge.
+  /// Throws [MfaNotCompletedException] if the mfa challenge is
   /// not yet completed.
   Future<Token> completeMfaChallenge(String mfaToken) async {
     var uri = Uri.parse('https://api.tech26.de/oauth2/token');
