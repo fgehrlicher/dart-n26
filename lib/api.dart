@@ -6,9 +6,11 @@ import 'package:http/http.dart';
 
 class Api {
   final Client _client;
+  final Auth _auth;
+
   Token _token;
 
-  Api(this._client);
+  Api(this._client, this._auth);
 
   /// Triggers the login process. After the future inside [mfaCompleter] is
   /// completed the auth controller will try to retrieve the token for the mfa
@@ -18,12 +20,10 @@ class Api {
     String password,
     Completer mfaCompleter,
   ) async {
-    var auth = Auth(_client);
-
-    var mfaToken = await auth.getMFAToken(username, password);
-    await auth.triggerMFAChallenge(mfaToken);
+    var mfaToken = await _auth.getMFAToken(username, password);
+    await _auth.triggerMFAChallenge(mfaToken);
 
     await mfaCompleter.future;
-    _token = await auth.completeMfaChallenge(mfaToken);
+    _token = await _auth.completeMfaChallenge(mfaToken);
   }
 }
