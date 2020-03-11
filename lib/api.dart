@@ -6,6 +6,8 @@ import 'package:dart_n26/dto/dto.dart';
 import 'package:http/http.dart' as http;
 
 class Api {
+  static const authority = 'api.tech26.de';
+
   final http.Client _client;
   final Auth _auth;
 
@@ -14,8 +16,7 @@ class Api {
   Api(this._client, this._auth);
 
   /// Triggers the login process. After the future inside [mfaCompleter] is
-  /// completed the auth controller will try to retrieve the token for the mfa
-  /// token. If mfa is not done yet the process will fail.
+  /// completed the auth controller will try to retrieve the token.
   Future<void> authorize(
     String username,
     String password,
@@ -28,6 +29,7 @@ class Api {
     _token = await _auth.completeMfaChallenge(mfaToken);
   }
 
+  /// Gets all transactions found for the specified filters.
   Future<List<Transaction>> getTransactions({
     int limit,
     DateTime from,
@@ -43,25 +45,43 @@ class Api {
       queryParameters['to'] = to.millisecondsSinceEpoch.toString();
     }
 
-    var uri = Uri.https(
-      'api.tech26.de',
-      '/api/smrt/transactions',
-      queryParameters,
+    var response = await _client.send(
+      _request(
+        'GET',
+        '/api/smrt/transactions',
+        queryParameters: queryParameters,
+      ),
     );
 
-    var request = http.Request(
-      'GET',
-      uri,
-    )..headers['Authorization'] = 'Bearer ${_token.accessToken}';
+    List responseBody = await _getJson(response.stream);
 
-    var response = await _client.send(request);
+    return responseBody.map((e) => Transaction.fromJson(e)).toList();
+  }
 
-    var rawContent = await response.stream.bytesToString();
+  http.BaseRequest _request(
+    String method,
+    String path, {
+    Map<String, String> queryParameters,
+  }) {
+    var uri = Uri.https(authority, path, queryParameters);
+    var request = http.Request(method, uri);
+    return _attachAuthHeader(request);
+  }
 
-    var transactions = (jsonDecode(rawContent) as List)
-        .map((e) => Transaction.fromJson(e))
-        .toList();
+  http.BaseRequest _attachAuthHeader(http.BaseRequest request) {
+    if (_token == null || _token.accessToken == null) {
+      throw Exception('can´t create auth header for invalid token');
+    }
 
-    return transactions;
+    request.headers['Authorization'] = 'Bearer ${_token.accessToken}';
+    return request;
+  }
+
+  Future<dynamic> _getJson(http.ByteStream byteStream) async {
+    var content = await byteStream.bytesToString();
+    if (content.isNotEmpty) {
+      return jsonDecode(content);
+    }
+    throw Exception('byteStream must not be empty');
   }
 }
