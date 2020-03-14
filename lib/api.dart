@@ -45,17 +45,35 @@ class Api {
       queryParameters['to'] = to.millisecondsSinceEpoch.toString();
     }
 
-    var response = await _client.send(
-      _request(
-        'GET',
-        '/api/smrt/transactions',
-        queryParameters: queryParameters,
-      ),
+    var response = await _sendRequest(
+      'GET',
+      '/api/smrt/transactions',
+      queryParameters: queryParameters,
     );
 
     List responseBody = await _getJson(response.stream);
 
     return responseBody.map((e) => Transaction.fromJson(e)).toList();
+  }
+
+  Future<http.StreamedResponse> _sendRequest(
+    String method,
+    String path, {
+    Map<String, String> queryParameters,
+  }) async {
+    var response = await _client.send(
+      _request(
+        method,
+        path,
+        queryParameters: queryParameters,
+      ),
+    );
+
+    if (response.statusCode == 401) {
+      throw Exception('401');
+    }
+
+    return response;
   }
 
   http.BaseRequest _request(
