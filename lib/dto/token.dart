@@ -5,10 +5,10 @@ class Token {
   DateTime validUntil;
 
   Token.FromJson(dynamic json) {
-    accessToken = json['access_token'] as String;
-    refreshToken = json['refresh_token'] as String;
-    tokenType = json['token_type'] as String;
-    var expiresIn = json['expires_in'] as int;
+    accessToken = json['access_token'];
+    refreshToken = json['refresh_token'];
+    tokenType = json['token_type'];
+    var expiresIn = json['expires_in'];
     if (expiresIn != null) {
       validUntil = DateTime.now().add(Duration(seconds: expiresIn));
     }
