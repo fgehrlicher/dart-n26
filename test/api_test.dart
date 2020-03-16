@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dart_n26/api.dart';
 import 'package:dart_n26/auth.dart';
@@ -38,24 +39,32 @@ void main() {
     verifyNoMoreInteractions(auth);
   });
 
-  test('authorize calls the right auth methods', () async {
+  test('getTransactions passes and decodes the http client response', () async {
     var auth = AuthMock();
     var completer = Completer();
-    completer.complete();
+    var fixture = File('test_fixtures/transactions.json');
+    var fixtureContent = await fixture.readAsString();
 
+    completer.complete();
     var subject = Api(
-      MockClient(),
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
       auth,
     );
 
     when(auth.completeMfaChallenge(any)).thenAnswer(
-          (_) => Future<Token>.value(
+      (_) => Future<Token>.value(
         Token.FromJson({'access_token': '123'}),
       ),
     );
+    await subject.authorize('', '', completer);
 
-    var test = await subject.getTransactions();
-
-    expect(test, "matcher");
+    var transactions = await subject.getTransactions();
+    expect(4, transactions.length);
+    expect('114 E-xpress Convenien', transactions[0].merchantName);
+    expect(276, transactions[1].merchantCountryCode);
+    expect(-27.5, transactions[2].originalAmount);
+    expect('micro-v2-miscellaneous', transactions[3].category);
   });
 }
