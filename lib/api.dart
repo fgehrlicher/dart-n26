@@ -172,6 +172,16 @@ class Api {
     return responseBody.map((e) => Statement.fromJson(e)).toList();
   }
 
+  /// Returns a Statement pdf.
+  /// Throws [InvalidAuthTokenException] if the token expired or the
+  /// return status code is equal to 401, [TooManyRequestsException] if the
+  /// request status code is equal to 429 and [ApiException] if the response
+  /// code does not match 200.
+  Future<http.ByteStream> getStatement(String statementId) async {
+    var response = await _sendRequest('GET', '/api/statements/$statementId');
+    return response.stream;
+  }
+
   Future<http.StreamedResponse> _sendRequest(
     String method,
     String path, {

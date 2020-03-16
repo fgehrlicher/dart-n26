@@ -557,4 +557,37 @@ void main() {
     expect(1580515200000, statements[1].visibleTS);
     expect(1, statements[2].month);
   });
+
+  test('getStatement passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixtureContent = 'PDF CONTENT';
+    var statementId = 'statement_id';
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        if (request.url.path == '/api/statements/$statementId') {
+          return Response(fixtureContent, 200);
+        }
+        return Response('', 404);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var statement = await subject.getStatement(statementId);
+    var string = await statement.bytesToString();
+
+    expect(fixtureContent, string);
+  });
 }
