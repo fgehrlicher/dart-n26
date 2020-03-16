@@ -66,7 +66,7 @@ class Api {
     String path, {
     Map<String, String> queryParameters,
   }) async {
-    if (_token == null || !_token.valid) {
+    if (_token == null || !_token.valid || _token.accessToken == null) {
       throw InvalidAuthTokenException();
     }
 
@@ -100,10 +100,6 @@ class Api {
   }
 
   http.BaseRequest _attachAuthHeader(http.BaseRequest request) {
-    if (_token == null || _token.accessToken == null) {
-      throw Exception('can´t create auth header for invalid token');
-    }
-
     request.headers['Authorization'] = 'Bearer ${_token.accessToken}';
     return request;
   }

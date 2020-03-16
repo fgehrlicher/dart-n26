@@ -145,7 +145,9 @@ void main() {
 
     expect(
       () async => await subject.getTransactions(),
-      throwsA(TypeMatcher<InvalidAuthTokenException>()),
+      throwsA(predicate((e) =>
+          e is InvalidAuthTokenException &&
+          e.toString() == 'Auth token invalid')),
     );
   });
 
@@ -208,6 +210,36 @@ void main() {
       throwsA(predicate((e) =>
           e is Exception &&
           e.toString() == 'Exception: byteStream must not be empty')),
+    );
+  });
+
+  test('every request fails for missing access_token', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var statusCode = 200;
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response('', statusCode);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'expires_in': 100,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    expect(
+      () async => await subject.getTransactions(),
+      throwsA(predicate((e) =>
+          e is InvalidAuthTokenException &&
+          e.toString() == 'Auth token invalid')),
     );
   });
 }
