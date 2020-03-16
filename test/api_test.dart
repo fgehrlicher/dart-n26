@@ -74,4 +74,140 @@ void main() {
     expect(-27.5, transactions[2].originalAmount);
     expect('micro-v2-miscellaneous', transactions[3].category);
   });
+
+  test('every request fails with invalid auth token', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response('', 200);
+      }),
+      auth,
+    );
+
+    expect(
+      () async => await subject.getTransactions(),
+      throwsA(TypeMatcher<InvalidAuthTokenException>()),
+    );
+  });
+
+  test('every request fails with expired auth token', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response('', 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 0,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    expect(
+      () async => await subject.getTransactions(),
+      throwsA(TypeMatcher<InvalidAuthTokenException>()),
+    );
+  });
+
+  test('every request fails for unauthorized response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response('', 401);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 100,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    expect(
+      () async => await subject.getTransactions(),
+      throwsA(TypeMatcher<InvalidAuthTokenException>()),
+    );
+  });
+
+  test('every request fails for invalid response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var statusCode = 500;
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response('', statusCode);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 100,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    expect(
+      () async => await subject.getTransactions(),
+      throwsA(predicate((e) =>
+          e is ApiException &&
+          e.toString() == 'Unkown error. status code: $statusCode')),
+    );
+  });
+
+  test('every request fails for empty byteStream', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var statusCode = 200;
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response('', statusCode);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 100,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    expect(
+      () async => await subject.getTransactions(),
+      throwsA(predicate((e) =>
+          e is Exception &&
+          e.toString() == 'Exception: byteStream must not be empty')),
+    );
+  });
 }

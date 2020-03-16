@@ -66,7 +66,7 @@ class Api {
     String path, {
     Map<String, String> queryParameters,
   }) async {
-    if (!_token.valid) {
+    if (_token == null || !_token.valid) {
       throw InvalidAuthTokenException();
     }
 
