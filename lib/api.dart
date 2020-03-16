@@ -35,7 +35,9 @@ class Api {
 
   /// Gets all transactions found for the specified filters.
   /// Throws [InvalidAuthTokenException] if the token expired or the
-  /// return status code is equal to 401.
+  /// return status code is equal to 401, [TooManyRequestsException] if the
+  /// request status code is equal to 429 and [ApiException] if the response
+  /// code does not match 200.
   Future<List<Transaction>> getTransactions({
     int limit,
     DateTime from,
