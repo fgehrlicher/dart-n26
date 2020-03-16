@@ -14,5 +14,5 @@ class Token {
     }
   }
 
-  bool isValid() => DateTime.now().compareTo(validUntil) < 0;
+  bool get valid => DateTime.now().compareTo(validUntil) < 0;
 }

@@ -17,6 +17,9 @@ class Api {
 
   /// Triggers the login process. After the future inside [mfaCompleter] is
   /// completed the auth controller will try to retrieve the token.
+  /// Throws [InvalidCredentialsException] if the credentials are invalid,
+  /// [MfaNotCompletedException] if the mfa challenge is not yet
+  /// completed.
   Future<void> authorize(
     String username,
     String password,
@@ -30,6 +33,8 @@ class Api {
   }
 
   /// Gets all transactions found for the specified filters.
+  /// Throws [InvalidAuthTokenException] if the token expired or the
+  /// return status code is equal to 401.
   Future<List<Transaction>> getTransactions({
     int limit,
     DateTime from,
@@ -61,6 +66,10 @@ class Api {
     String path, {
     Map<String, String> queryParameters,
   }) async {
+    if (!_token.valid) {
+      throw InvalidAuthTokenException();
+    }
+
     var response = await _client.send(
       _request(
         method,
@@ -70,10 +79,14 @@ class Api {
     );
 
     if (response.statusCode == 401) {
-      throw Exception('401');
+      throw InvalidAuthTokenException();
     }
 
-    return response;
+    if (response.statusCode == 200) {
+      return response;
+    }
+
+    throw ApiException(response.statusCode);
   }
 
   http.BaseRequest _request(
@@ -102,4 +115,18 @@ class Api {
     }
     throw Exception('byteStream must not be empty');
   }
+}
+
+class InvalidAuthTokenException implements Exception {
+  @override
+  String toString() => 'Auth token invalid';
+}
+
+class ApiException implements Exception {
+  int statusCode;
+
+  ApiException(this.statusCode);
+
+  @override
+  String toString() => 'Unkown error. status code: $statusCode';
 }
