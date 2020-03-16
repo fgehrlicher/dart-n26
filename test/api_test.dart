@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dart_n26/api.dart';
 import 'package:dart_n26/auth.dart';
 import 'package:dart_n26/dart_n26.dart';
+import 'package:dart_n26/exceptions.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:mockito/mockito.dart';
@@ -240,6 +241,36 @@ void main() {
       throwsA(predicate((e) =>
           e is InvalidAuthTokenException &&
           e.toString() == 'Auth token invalid')),
+    );
+  });
+
+  test('every request fails for too many requests', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response('', 429);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 100,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    expect(
+      () async => await subject.getTransactions(),
+      throwsA(predicate((e) =>
+          e is TooManyRequestsException &&
+          e.toString() == 'Too Many Requests')),
     );
   });
 }

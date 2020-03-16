@@ -110,8 +110,10 @@ class Auth {
     _baseHeader.forEach((header, value) {
       request.headers[header] = value;
     });
-    request.headers['Content-Type'] = 'application/json';
-    request.body = jsonBody;
+    if (jsonBody.isNotEmpty) {
+      request.headers['Content-Type'] = 'application/json';
+      request.body = jsonBody;
+    }
     return request;
   }
 }
