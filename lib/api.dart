@@ -156,7 +156,7 @@ class Api {
   /// request status code is equal to 429 and [ApiException] if the response
   /// code does not match 200.
   Future<Spaces> getSpaces() async {
-    var response = await _sendRequest('GET', '/api/smrt/contacts');
+    var response = await _sendRequest('GET', '/api/spaces');
     Map responseBody = await _getJson(response.stream);
     return Spaces.fromJson(responseBody);
   }
