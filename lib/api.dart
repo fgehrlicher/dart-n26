@@ -5,6 +5,7 @@ import 'package:dart_n26/auth.dart';
 import 'package:dart_n26/dto/accounts.dart';
 import 'package:dart_n26/dto/dto.dart';
 import 'package:dart_n26/dto/profile.dart';
+import 'package:dart_n26/dto/status.dart';
 import 'package:dart_n26/exceptions.dart';
 import 'package:http/http.dart' as http;
 
@@ -86,6 +87,17 @@ class Api {
     var response = await _sendRequest('GET', '/api/accounts');
     Map responseBody = await _getJson(response.stream);
     return Accounts.fromJson(responseBody);
+  }
+
+  /// Returns all Statuses.
+  /// Throws [InvalidAuthTokenException] if the token expired or the
+  /// return status code is equal to 401, [TooManyRequestsException] if the
+  /// request status code is equal to 429 and [ApiException] if the response
+  /// code does not match 200.
+  Future<Status> getStatuses() async {
+    var response = await _sendRequest('GET', '/api/me/statuses');
+    Map responseBody = await _getJson(response.stream);
+    return Status.fromJson(responseBody);
   }
 
   Future<http.StreamedResponse> _sendRequest(

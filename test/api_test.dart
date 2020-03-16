@@ -336,4 +336,35 @@ void main() {
     expect(731.66, accounts.bankBalance);
     expect(null, accounts.physicalBalance);
   });
+
+  test('getStatuses passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixture = File('test_fixtures/statuses.json');
+    var fixtureContent = await fixture.readAsString();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+          (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var statuses = await subject.getStatuses();
+
+    expect('COMPLETED', statuses.kycDetails.status);
+    expect(1541440294844, statuses.kycInitiated);
+    expect(null, statuses.userStatusCol);
+  });
 }
