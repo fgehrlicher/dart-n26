@@ -273,4 +273,34 @@ void main() {
           e.toString() == 'Too Many Requests')),
     );
   });
+
+  test('getProfile passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixture = File('test_fixtures/profile.json');
+    var fixtureContent = await fixture.readAsString();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+          (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var profile = await subject.getProfile();
+
+    expect(827971200000, profile.birthDate);
+    expect('+49xxxxxxxxxx', profile.mobilePhoneNumber);
+  });
 }

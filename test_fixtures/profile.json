@@ -1,0 +1,17 @@
+{
+  "id": "XXX",
+  "email": "XXX",
+  "firstName": "XXX",
+  "lastName": "XXX",
+  "kycFirstName": "XXX",
+  "kycLastName": "XXX",
+  "title": "",
+  "gender": "XXX",
+  "birthDate": 827971200000,
+  "signupCompleted": false,
+  "nationality": "XXXX",
+  "mobilePhoneNumber": "+49xxxxxxxxxx",
+  "shadowUserId": "XXX",
+  "transferWiseTermsAccepted": false,
+  "idNowToken": null
+}

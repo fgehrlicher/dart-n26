@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dart_n26/auth.dart';
 import 'package:dart_n26/dto/dto.dart';
+import 'package:dart_n26/dto/profile.dart';
 import 'package:dart_n26/exceptions.dart';
 import 'package:http/http.dart' as http;
 
@@ -64,6 +65,17 @@ class Api {
     return responseBody.map((e) => Transaction.fromJson(e)).toList();
   }
 
+  /// Retries the Profile.
+  /// Throws [InvalidAuthTokenException] if the token expired or the
+  /// return status code is equal to 401, [TooManyRequestsException] if the
+  /// request status code is equal to 429 and [ApiException] if the response
+  /// code does not match 200.
+  Future<Profile> getProfile() async {
+    var response = await _sendRequest('GET', '/api/me');
+    Map responseBody = await _getJson(response.stream);
+    return Profile.fromJson(responseBody);
+  }
+
   Future<http.StreamedResponse> _sendRequest(
     String method,
     String path, {
@@ -81,25 +93,29 @@ class Api {
       ),
     );
 
-    switch(response.statusCode) {
-      case 401: {
-        throw InvalidAuthTokenException();
-      }
-      break;
+    switch (response.statusCode) {
+      case 401:
+        {
+          throw InvalidAuthTokenException();
+        }
+        break;
 
-      case 429: {
-        throw TooManyRequestsException();
-      }
-      break;
+      case 429:
+        {
+          throw TooManyRequestsException();
+        }
+        break;
 
-      case 200: {
-        return response;
-      }
-      break;
+      case 200:
+        {
+          return response;
+        }
+        break;
 
-      default: {
-        throw ApiException(response.statusCode);
-      }
+      default:
+        {
+          throw ApiException(response.statusCode);
+        }
     }
   }
 
