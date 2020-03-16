@@ -43,52 +43,6 @@ class Transaction {
   String purposeCode;
   String referenceToOriginalOperation;
 
-  Transaction({
-    this.id,
-    this.userId,
-    this.type,
-    this.amount,
-    this.currencyCode,
-    this.originalAmount,
-    this.originalCurrency,
-    this.exchangeRate,
-    this.merchantCity,
-    this.visibleTS,
-    this.mcc,
-    this.mccGroup,
-    this.merchantName,
-    this.recurring,
-    this.partnerAccountIsSepa,
-    this.accountId,
-    this.category,
-    this.cardId,
-    this.userCertified,
-    this.pending,
-    this.transactionNature,
-    this.createdTS,
-    this.merchantCountry,
-    this.merchantCountryCode,
-    this.txnCondition,
-    this.smartLinkId,
-    this.linkId,
-    this.confirmed,
-    this.partnerBic,
-    this.partnerName,
-    this.partnerIban,
-    this.referenceText,
-    this.mandateId,
-    this.creditorIdentifier,
-    this.creditorName,
-    this.smartContactId,
-    this.partnerBcn,
-    this.partnerAccountBan,
-    this.userAccepted,
-    this.partnerBankName,
-    this.paymentScheme,
-    this.purposeCode,
-    this.referenceToOriginalOperation,
-  });
-
   Transaction.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['userId'];
