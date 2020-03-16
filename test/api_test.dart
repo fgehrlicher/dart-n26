@@ -495,4 +495,35 @@ void main() {
     expect('sepa2', contacts[1].account.accountType);
     expect('XXX', contacts[1].subtitle);
   });
+
+  test('getSpaces passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixture = File('test_fixtures/spaces.json');
+    var fixtureContent = await fixture.readAsString();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var spaces = await subject.getSpaces();
+
+    expect('https://cdn.number26.de/spaces/default-images/account_cards.jpg?version=1', spaces.spaces[0].imageUrl);
+    expect(685.77, spaces.totalBalance);
+    expect(0, spaces.userFeatures.availableSpaces);
+  });
 }

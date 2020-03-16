@@ -1,0 +1,59 @@
+{
+  "totalBalance": 685.77,
+  "visibleBalance": 685.77,
+  "spaces": [
+    {
+      "id": "XXX",
+      "accountId": "XXX",
+      "name": "XXX",
+      "imageUrl": "https://cdn.number26.de/spaces/default-images/account_cards.jpg?version=1",
+      "backgroundImageUrl": "https://cdn.number26.de/spaces/background-images/account_cards_background.jpg?version=1",
+      "balance": {
+        "availableBalance": 685.77,
+        "currency": "EUR"
+      },
+      "isPrimary": true,
+      "isHiddenFromBalance": false,
+      "isCardAttached": true,
+      "isLocked": false
+    },
+    {
+      "id": "XXX",
+      "accountId": "XXX",
+      "name": "XXX",
+      "imageUrl": "https://cdn.number26.de/spaces/default-images/saving_piggy.jpg?version=1",
+      "backgroundImageUrl": "https://cdn.number26.de/spaces/background-images/saving_piggy_background.jpg?version=1",
+      "balance": {
+        "availableBalance": 0.0,
+        "currency": "EUR"
+      },
+      "isPrimary": false,
+      "isHiddenFromBalance": false,
+      "isCardAttached": false,
+      "goal": {
+        "id": "XXX",
+        "amount": 10000.0
+      },
+      "isLocked": false
+    },
+    {
+      "id": "XXX",
+      "accountId": "XXX",
+      "name": "XXX",
+      "imageUrl": "https://cdn.number26.de/spaces/default-images/vacation_globe.jpg?version=1",
+      "backgroundImageUrl": "https://cdn.number26.de/spaces/background-images/vacation_globe_background.jpg?version=1",
+      "balance": {
+        "availableBalance": 0.0,
+        "currency": "EUR"
+      },
+      "isPrimary": false,
+      "isHiddenFromBalance": false,
+      "isCardAttached": false,
+      "isLocked": false
+    }
+  ],
+  "userFeatures": {
+    "availableSpaces": 0,
+    "canUpgrade": true
+  }
+}
