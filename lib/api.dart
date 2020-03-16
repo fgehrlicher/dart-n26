@@ -10,6 +10,7 @@ import 'package:dart_n26/dto/dto.dart';
 import 'package:dart_n26/dto/limit.dart';
 import 'package:dart_n26/dto/profile.dart';
 import 'package:dart_n26/dto/spaces.dart';
+import 'package:dart_n26/dto/statement.dart';
 import 'package:dart_n26/dto/status.dart';
 import 'package:dart_n26/exceptions.dart';
 import 'package:http/http.dart' as http;
@@ -158,6 +159,17 @@ class Api {
     var response = await _sendRequest('GET', '/api/smrt/contacts');
     Map responseBody = await _getJson(response.stream);
     return Spaces.fromJson(responseBody);
+  }
+
+  /// Returns all Statements.
+  /// Throws [InvalidAuthTokenException] if the token expired or the
+  /// return status code is equal to 401, [TooManyRequestsException] if the
+  /// request status code is equal to 429 and [ApiException] if the response
+  /// code does not match 200.
+  Future<List<Statement>> getStatements() async {
+    var response = await _sendRequest('GET', '/api/statements');
+    List responseBody = await _getJson(response.stream);
+    return responseBody.map((e) => Statement.fromJson(e)).toList();
   }
 
   Future<http.StreamedResponse> _sendRequest(

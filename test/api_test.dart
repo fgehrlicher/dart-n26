@@ -526,4 +526,35 @@ void main() {
     expect(685.77, spaces.totalBalance);
     expect(0, spaces.userFeatures.availableSpaces);
   });
+
+  test('getStatements passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixture = File('test_fixtures/statements.json');
+    var fixtureContent = await fixture.readAsString();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var statements = await subject.getStatements();
+
+    expect('statement-2020-03', statements[0].id);
+    expect(1580515200000, statements[1].visibleTS);
+    expect(1, statements[2].month);
+  });
 }

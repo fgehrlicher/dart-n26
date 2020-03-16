@@ -1,0 +1,23 @@
+[
+  {
+    "id": "statement-2020-03",
+    "url": "/api/statements/statement-2020-03",
+    "visibleTS": 1583020800000,
+    "month": 3,
+    "year": 2020
+  },
+  {
+    "id": "statement-2020-02",
+    "url": "/api/statements/statement-2020-02",
+    "visibleTS": 1580515200000,
+    "month": 2,
+    "year": 2020
+  },
+  {
+    "id": "statement-2020-01",
+    "url": "/api/statements/statement-2020-01",
+    "visibleTS": 1577836800000,
+    "month": 1,
+    "year": 2020
+  }
+]
