@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dart_n26/dto/dto.dart';
+import 'package:dart_n26/exceptions.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
@@ -113,33 +114,4 @@ class Auth {
     request.body = jsonBody;
     return request;
   }
-}
-
-class AuthApiException implements Exception {
-  int statusCode;
-
-  AuthApiException(this.statusCode);
-
-  @override
-  String toString() => 'unkown error. status code: $statusCode';
-}
-
-class InvalidCredentialsException implements Exception {
-  @override
-  String toString() => 'Invalid credentials';
-}
-
-class NoMfaTokenException implements Exception {
-  @override
-  String toString() => 'No mfa token found in response';
-}
-
-class MfaTriggerException implements Exception {
-  @override
-  String toString() => 'Cant trigger mfa';
-}
-
-class MfaNotCompletedException implements Exception {
-  @override
-  String toString() => 'Mfa not yet completed';
 }

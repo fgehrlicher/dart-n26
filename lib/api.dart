@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dart_n26/auth.dart';
 import 'package:dart_n26/dto/dto.dart';
+import 'package:dart_n26/exceptions.dart';
 import 'package:http/http.dart' as http;
 
 class Api {
@@ -78,15 +79,26 @@ class Api {
       ),
     );
 
-    if (response.statusCode == 401) {
-      throw InvalidAuthTokenException();
-    }
+    switch(response.statusCode) {
+      case 401: {
+        throw InvalidAuthTokenException();
+      }
+      break;
 
-    if (response.statusCode == 200) {
-      return response;
-    }
+      case 429: {
+        throw TooManyRequestsException();
+      }
+      break;
 
-    throw ApiException(response.statusCode);
+      case 200: {
+        return response;
+      }
+      break;
+
+      default: {
+        throw ApiException(response.statusCode);
+      }
+    }
   }
 
   http.BaseRequest _request(
@@ -111,18 +123,4 @@ class Api {
     }
     throw Exception('byteStream must not be empty');
   }
-}
-
-class InvalidAuthTokenException implements Exception {
-  @override
-  String toString() => 'Auth token invalid';
-}
-
-class ApiException implements Exception {
-  int statusCode;
-
-  ApiException(this.statusCode);
-
-  @override
-  String toString() => 'Unkown error. status code: $statusCode';
 }
