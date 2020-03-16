@@ -60,7 +60,12 @@ void main() {
     );
     await subject.authorize('', '', completer);
 
-    var transactions = await subject.getTransactions();
+    var transactions = await subject.getTransactions(
+      limit: 10,
+      from: DateTime.now().subtract(Duration(days: 1)),
+      to: DateTime.now()
+    );
+
     expect(4, transactions.length);
     expect('114 E-xpress Convenien', transactions[0].merchantName);
     expect(276, transactions[1].merchantCountryCode);
