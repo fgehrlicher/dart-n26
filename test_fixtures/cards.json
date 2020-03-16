@@ -1,0 +1,29 @@
+[
+  {
+    "id": "XXX",
+    "maskedPan": "XXX******XXX",
+    "publicToken": null,
+    "pinDefined": 1573455164290,
+    "cardActivated": 1573455164538,
+    "usernameOnCard": "XXX",
+    "status": "XXX",
+    "design": "WORLD",
+    "cardProductType": "STANDARD",
+    "applePayEligible": true,
+    "googlePayEligible": true,
+    "pan": null,
+    "expirationDate": 1727654400000,
+    "cardType": "MASTERCARD",
+    "cardProduct": null,
+    "exceetExpressCardDelivery": null,
+    "membership": null,
+    "exceetActualDeliveryDate": null,
+    "exceetExpressCardDeliveryEmailSent": null,
+    "exceetCardStatus": null,
+    "exceetExpectedDeliveryDate": null,
+    "exceetExpressCardDeliveryTrackingId": null,
+    "cardSettingsId": null,
+    "mptsCard": true,
+    "orderId": null
+  }
+]

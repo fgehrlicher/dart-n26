@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:dart_n26/auth.dart';
 import 'package:dart_n26/dto/accounts.dart';
 import 'package:dart_n26/dto/addresses.dart';
+import 'package:dart_n26/dto/card.dart';
 import 'package:dart_n26/dto/dto.dart';
 import 'package:dart_n26/dto/profile.dart';
 import 'package:dart_n26/dto/status.dart';
@@ -110,6 +111,17 @@ class Api {
     var response = await _sendRequest('GET', '/api/addresses');
     Map responseBody = await _getJson(response.stream);
     return Addresses.fromJson(responseBody);
+  }
+
+  /// Returns all Cards.
+  /// Throws [InvalidAuthTokenException] if the token expired or the
+  /// return status code is equal to 401, [TooManyRequestsException] if the
+  /// request status code is equal to 429 and [ApiException] if the response
+  /// code does not match 200.
+  Future<List<Card>> getCards() async {
+    var response = await _sendRequest('GET', '/api/v2/cards');
+    List responseBody = await _getJson(response.stream);
+    return responseBody.map((e) => Card.fromJson(e)).toList();
   }
 
   Future<http.StreamedResponse> _sendRequest(

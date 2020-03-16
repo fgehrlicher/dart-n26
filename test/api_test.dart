@@ -399,4 +399,36 @@ void main() {
     expect('LEGAL', addresses.addresses[2].type);
     expect(3, addresses.paging.totalResults);
   });
+
+  test('getCards passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixture = File('test_fixtures/cards.json');
+    var fixtureContent = await fixture.readAsString();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var cards = await subject.getCards();
+
+    expect('STANDARD', cards[0].cardProductType);
+    expect(1727654400000, cards[0].expirationDate);
+    expect('MASTERCARD', cards[0].cardType);
+    expect(null, cards[0].publicToken);
+  });
 }
