@@ -431,4 +431,36 @@ void main() {
     expect('MASTERCARD', cards[0].cardType);
     expect(null, cards[0].publicToken);
   });
+
+  test('getLimits passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixture = File('test_fixtures/limits.json');
+    var fixtureContent = await fixture.readAsString();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var limits = await subject.getLimits();
+
+    expect('POS_DAILY_ACCOUNT', limits[0].limit);
+    expect(2500.0, limits[0].amount);
+    expect('ATM_DAILY_ACCOUNT', limits[1].limit);
+    expect(2500.0, limits[1].amount);
+  });
 }

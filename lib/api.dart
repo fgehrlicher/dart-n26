@@ -6,6 +6,7 @@ import 'package:dart_n26/dto/accounts.dart';
 import 'package:dart_n26/dto/addresses.dart';
 import 'package:dart_n26/dto/card.dart';
 import 'package:dart_n26/dto/dto.dart';
+import 'package:dart_n26/dto/limit.dart';
 import 'package:dart_n26/dto/profile.dart';
 import 'package:dart_n26/dto/status.dart';
 import 'package:dart_n26/exceptions.dart';
@@ -122,6 +123,17 @@ class Api {
     var response = await _sendRequest('GET', '/api/v2/cards');
     List responseBody = await _getJson(response.stream);
     return responseBody.map((e) => Card.fromJson(e)).toList();
+  }
+
+  /// Returns all Limits.
+  /// Throws [InvalidAuthTokenException] if the token expired or the
+  /// return status code is equal to 401, [TooManyRequestsException] if the
+  /// request status code is equal to 429 and [ApiException] if the response
+  /// code does not match 200.
+  Future<List<Limit>> getLimits() async {
+    var response = await _sendRequest('GET', '/api/settings/account/limits');
+    List responseBody = await _getJson(response.stream);
+    return responseBody.map((e) => Limit.fromJson(e)).toList();
   }
 
   Future<http.StreamedResponse> _sendRequest(
