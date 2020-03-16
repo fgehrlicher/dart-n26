@@ -1,0 +1,57 @@
+{
+  "paging": {
+    "previous": null,
+    "next": null,
+    "totalResults": 3
+  },
+  "data": [
+    {
+      "id": "XXX",
+      "created": 1523022640528,
+      "updated": 1541439748344,
+      "addressLine1": "",
+      "addressLine2": null,
+      "streetName": "XXX",
+      "houseNumberBlock": "XXX",
+      "zipCode": "XXX",
+      "cityName": "XXX",
+      "state": null,
+      "countryName": "DEU",
+      "type": "SHIPPING",
+      "userId": "XXX",
+      "fromAllowedCountry": true
+    },
+    {
+      "id": "XXX",
+      "created": 1541440641618,
+      "updated": 1541440641618,
+      "addressLine1": "",
+      "addressLine2": null,
+      "streetName": "XXX",
+      "houseNumberBlock": "4",
+      "zipCode": "XXX",
+      "cityName": "XXX",
+      "state": null,
+      "countryName": "XXX",
+      "type": "PASSPORT",
+      "userId": "XXX",
+      "fromAllowedCountry": true
+    },
+    {
+      "id": "XXX",
+      "created": 1523022640533,
+      "updated": 1542002455100,
+      "addressLine1": "",
+      "addressLine2": null,
+      "streetName": "XXX",
+      "houseNumberBlock": "XXX",
+      "zipCode": "XXX",
+      "cityName": "XXX",
+      "state": null,
+      "countryName": "XXX",
+      "type": "LEGAL",
+      "userId": "XXX",
+      "fromAllowedCountry": true
+    }
+  ]
+}

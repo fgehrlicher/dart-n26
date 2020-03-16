@@ -289,7 +289,7 @@ void main() {
     );
 
     when(auth.completeMfaChallenge(any)).thenAnswer(
-          (_) => Future<Token>.value(
+      (_) => Future<Token>.value(
         Token.FromJson({
           'access_token': '123',
           'expires_in': 1000,
@@ -319,7 +319,7 @@ void main() {
     );
 
     when(auth.completeMfaChallenge(any)).thenAnswer(
-          (_) => Future<Token>.value(
+      (_) => Future<Token>.value(
         Token.FromJson({
           'access_token': '123',
           'expires_in': 1000,
@@ -352,7 +352,7 @@ void main() {
     );
 
     when(auth.completeMfaChallenge(any)).thenAnswer(
-          (_) => Future<Token>.value(
+      (_) => Future<Token>.value(
         Token.FromJson({
           'access_token': '123',
           'expires_in': 1000,
@@ -366,5 +366,37 @@ void main() {
     expect('COMPLETED', statuses.kycDetails.status);
     expect(1541440294844, statuses.kycInitiated);
     expect(null, statuses.userStatusCol);
+  });
+
+  test('getAddresses passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixture = File('test_fixtures/addresses.json');
+    var fixtureContent = await fixture.readAsString();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var addresses = await subject.getAddresses();
+
+    expect('SHIPPING', addresses.addresses[0].type);
+    expect('PASSPORT', addresses.addresses[1].type);
+    expect('LEGAL', addresses.addresses[2].type);
+    expect(3, addresses.paging.totalResults);
   });
 }
