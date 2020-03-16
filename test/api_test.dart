@@ -463,4 +463,36 @@ void main() {
     expect('ATM_DAILY_ACCOUNT', limits[1].limit);
     expect(2500.0, limits[1].amount);
   });
+
+  test('getContacts passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixture = File('test_fixtures/contacts.json');
+    var fixtureContent = await fixture.readAsString();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+      (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var contacts = await subject.getContacts();
+
+    expect('sepa', contacts[0].account.accountType);
+    expect('XXX', contacts[0].subtitle);
+    expect('sepa2', contacts[1].account.accountType);
+    expect('XXX', contacts[1].subtitle);
+  });
 }

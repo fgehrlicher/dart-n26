@@ -1,0 +1,24 @@
+[
+  {
+    "userId": "XXX",
+    "id": "XXX",
+    "name": "XXX",
+    "subtitle": "XXX",
+    "account": {
+      "accountType": "sepa",
+      "iban": "XXX",
+      "bic": "XXX"
+    }
+  },
+  {
+    "userId": "XXX",
+    "id": "XXX",
+    "name": "XXX",
+    "subtitle": "XXX",
+    "account": {
+      "accountType": "sepa2",
+      "iban": "XXX",
+      "bic": "XXX"
+    }
+  }
+]
