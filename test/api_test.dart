@@ -303,4 +303,37 @@ void main() {
     expect(827971200000, profile.birthDate);
     expect('+49xxxxxxxxxx', profile.mobilePhoneNumber);
   });
+
+  test('getAccounts passes and decodes the http client response', () async {
+    var auth = AuthMock();
+    var completer = Completer();
+    var fixture = File('test_fixtures/accounts.json');
+    var fixtureContent = await fixture.readAsString();
+
+    completer.complete();
+    var subject = Api(
+      MockClient((request) async {
+        return Response(fixtureContent, 200);
+      }),
+      auth,
+    );
+
+    when(auth.completeMfaChallenge(any)).thenAnswer(
+          (_) => Future<Token>.value(
+        Token.FromJson({
+          'access_token': '123',
+          'expires_in': 1000,
+        }),
+      ),
+    );
+    await subject.authorize('', '', completer);
+
+    var accounts = await subject.getAccounts();
+
+    expect('OWNER', accounts.users[0].userRole);
+    expect('XXX', accounts.externalId.iban);
+    expect('N26 Bank', accounts.bankName);
+    expect(731.66, accounts.bankBalance);
+    expect(null, accounts.physicalBalance);
+  });
 }

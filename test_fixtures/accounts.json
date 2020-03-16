@@ -1,0 +1,22 @@
+{
+  "id": "XXX",
+  "physicalBalance": null,
+  "availableBalance": 685.77,
+  "usableBalance": 685.77,
+  "bankBalance": 731.66,
+  "iban": "XXX",
+  "bic": "XXX",
+  "bankName": "N26 Bank",
+  "seized": false,
+  "currency": "EUR",
+  "legalEntity": "EU",
+  "users": [
+    {
+      "userId": "XXX",
+      "userRole": "OWNER"
+    }
+  ],
+  "externalId": {
+    "iban": "XXX"
+  }
+}
