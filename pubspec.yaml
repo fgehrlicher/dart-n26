@@ -1,6 +1,9 @@
-name: dart_n26
-description: dart n26 api
+name: "dart_n26"
 version: 0.1.0
+description: "Unofficial Dart Client for the N26 Api"
+homepage: "https://github.com/fgehrlicher/dart-n26"
+repository: "https://github.com/fgehrlicher/dart-n26"
+issue_tracker: "https://github.com/fgehrlicher/dart-n26/issues"
 
 environment:
   sdk: '>=2.7.0 <3.0.0'
