@@ -9,7 +9,6 @@ After calling the 'authorize' method, you will receive a pop-up message on your 
 which will ask you to tap to confirm that the sign in attempt is legitimate. confirm that and complete 
 the completer passed to the authorize method. 
 
-
 ## Example Usage
 ```dart
 import 'dart:async';
@@ -33,7 +32,15 @@ void main() async {
     from: DateTime.now().subtract(Duration(days: 1)),
     to: DateTime.now(),
   );
-
-  print(transactions);
+  var profile = await api.getProfile();
+  var accounts = await api.getAccounts();
+  var statuses = await api.getStatuses();
+  var addresses = await api.getAddresses();
+  var cards = await api.getCards();
+  var limits = await api.getLimits();
+  var spaces = await api.getSpaces();
+  var contacts = await api.getContacts();
+  var statements = await api.getStatements();
+  var statement = await api.getStatement(statements[0].id);
 }
 ```
