@@ -1,5 +1,5 @@
 # Dart N26 Api Client
-![Tests](https://github.com/fgehrlicher/dart-n26/workflows/Tests/badge.svg) [![codecov](https://codecov.io/gh/fgehrlicher/dart-n26/branch/master/graph/badge.svg)](https://codecov.io/gh/fgehrlicher/dart-n26)  
+[![pub package](https://img.shields.io/pub/v/dart_n26.svg)](https://pub.dartlang.org/packages/sembast) ![Tests](https://github.com/fgehrlicher/dart-n26/workflows/Tests/badge.svg) [![codecov](https://codecov.io/gh/fgehrlicher/dart-n26/branch/master/graph/badge.svg)](https://codecov.io/gh/fgehrlicher/dart-n26)  
 Unofficial dart client for the N26 api. The purpose of this client is only to retrieve data, 
 not to send payments or change settings.
 
