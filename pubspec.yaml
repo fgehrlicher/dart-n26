@@ -1,6 +1,6 @@
 name: "dart_n26"
-version: 0.1.0
-description: "Unofficial Dart Client for the N26 Api"
+version: 0.1.2
+description: "Unofficial dart client for the N26 api. The purpose of this client is only to retrieve data, not to send payments or change settings."
 homepage: "https://github.com/fgehrlicher/dart-n26"
 repository: "https://github.com/fgehrlicher/dart-n26"
 issue_tracker: "https://github.com/fgehrlicher/dart-n26/issues"
